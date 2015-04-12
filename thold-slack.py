@@ -24,6 +24,7 @@ import email
 from email import parser, FeedParser
 from email.Iterators import typed_subpart_iterator
 import urllib2,json
+from urllib2 import HTTPError, URLError
 
 #### BEGIN GLOBAL VARIABLES ####
 ''' 
@@ -100,6 +101,8 @@ def main():
     # POST data to Slack API
     try:
         urllib2.urlopen(req,postdata)
+    except ValueError, e:
+        print ('Invalid slack_webhook_url defined, please update with your Slack.com webhook URL')
     except HTTPError as e:
         print 'The server couldn\'t fulfill the request.'
         print 'Error code: ', e.code
