@@ -33,9 +33,11 @@ import urllib2,json
 slack_webhook_url   =   '<your Slack webhook URL goes here>' 
 
 slack_channel       =   '#random'  # modify this to your liking, ex: #alerts
-slack_usernmae      =   'Cacti THOLD' # the username reported in channel
+slack_usernmae      =   'Cacti THOLD' # the username reported in channel, modify to your liking
 slack_icon_emoji    =   ':cactus:' # any valid Slack emoji code,  defaults to cactus becasue Cacti
-slack_title_link    =   "<insert URL to your THOLD alerts>" #ex: "https://<your-server>/cacti/plugins/thold/thold_graph.php?sort_column=lastread&sort_direction=DESC"
+slack_pretext       =   "" # optional pretext message you want on every message, ex: "Notification from Cacti on server01", left blank by default
+slack_title_link    =   "<edit me to include a hyperlink or set me to "">" #optional, can be blank ex: "https://<your-server>/cacti/plugins/thold/thold_graph.php?sort_column=lastread&sort_direction=DESC"
+
 
 # you can use Slack API colors: good, warning, danger or any HEX value
 thold_alert_color    = 'danger'
@@ -80,7 +82,7 @@ def main():
         'attachments': [
             {
                 "fallback": mail['subject'],
-                "pretext": "",
+                "pretext": slack_pretext,
                 "title": mail['subject'],
                 "title_link": slack_title_link,
                 "text": message,
