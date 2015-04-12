@@ -18,7 +18,7 @@ and post the contents to a Slack channel as a rich format 'attachment' message
 
 '''
 
-# import modules 
+# import modules
 import sys
 import email
 from email import parser, FeedParser
@@ -27,11 +27,11 @@ import urllib2,json
 from urllib2 import HTTPError, URLError
 
 #### BEGIN GLOBAL VARIABLES ####
-''' 
+'''
 You need to edit 'slack_webhook_url' with a webhook URL configured at:
 Slack Webhook URL (https://<domain>.slack.com/services/new/incoming-webhook)
 '''
-slack_webhook_url   =   '<your Slack webhook URL goes here>' 
+slack_webhook_url   =   '<your Slack webhook URL goes here>'
 
 slack_channel       =   '#random'  # modify this to your liking, ex: #alerts
 slack_usernmae      =   'Cacti THOLD' # the username reported in channel, modify to your liking
@@ -76,7 +76,7 @@ def main():
     elif mail['subject'].startswith('WARNING'):
         color = thold_warning_color
     else:
-     color = thold_default_color
+        color = thold_default_color
 
 
     # build payload (https://api.slack.com/docs/attachments)
@@ -156,4 +156,4 @@ def get_body(message):
         return body.strip()
 
 if __name__ == '__main__':
-  main()
+    main()
