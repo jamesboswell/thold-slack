@@ -60,9 +60,8 @@ def main():
     # call feed close to create mail object
     mail = feed.close()
 
-    # DEBUG code
-    #message = get_body(mail)
-    #print message
+    # get the body of the email as message
+    message = get_body(mail)
 
     # determine Slack attachment color
     # allows for nice color coding of msgs
