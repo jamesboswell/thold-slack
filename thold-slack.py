@@ -49,7 +49,12 @@ thold_default_color  = '#439FE0' # a nice blue for any notice not ALERT or WARNI
 def main():
 
     # read in piped socket as 'data'
-    data = sys.stdin.readlines()
+    if not sys.stdin.isatty():
+        data = sys.stdin.readlines()
+    else:
+        print("You need to pipe in a valid email message")
+        print("Example: \"cat email.eml | ./thold-slack.py\"")
+        sys.exit(1)
 
     # create email parser
     feed = email.parser.FeedParser()
