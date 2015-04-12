@@ -1,0 +1,23 @@
+From apache@server.local Wed Apr  8 17:12:39 2015
+Received: from nms-server.localdomain (localhost [127.0.0.1])
+        by nms-server.localdomain (8.14.4/8.14.4) with ESMTP id t38LCdw7005957
+        for <thold-slack@nms-server.localdomain>; Wed, 8 Apr 2015 17:12:39 -0400
+Received: (from apache@localhost)
+        by nms-server.localdomain (8.14.4/8.14.4/Submit) id t38LCdc0005956;
+        Wed, 8 Apr 2015 17:12:39 -0400
+Message-Id: <201504082112.t38LCdc0005956@nms-server.localdomain>
+From: NetOps Cacti <cacti@nms03.server.localdomain>
+To: thold-slack@nms-server.localdomain
+Date: Wed, 08 Apr 2015 17:12:39 -0400
+X-Mailer: Cacti-Mailer-Class
+User-Agent: Cacti-Mailer-Class
+Subject: Cacti Test Message
+Content-Type: text/plain
+MIME-Version: 1.0
+
+This is a test message generated from Cacti.  This message was sent to test the configuration of your Mail Settings.
+
+Your email settings are currently set as follows
+
+Method: Sendmail
+Sendmail Path: /usr/sbin/sendmail -twc
