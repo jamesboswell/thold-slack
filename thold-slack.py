@@ -26,10 +26,10 @@ from email.Iterators import typed_subpart_iterator
 import urllib2,json
 
 #### BEGIN GLOBAL VARIABLES ####
-    ''' 
-    You need to edit 'slack_webhook_url' with a webhook URL configured at:
-    Slack Webhook URL (https://<domain>.slack.com/services/new/incoming-webhook)
-    '''
+''' 
+You need to edit 'slack_webhook_url' with a webhook URL configured at:
+Slack Webhook URL (https://<domain>.slack.com/services/new/incoming-webhook)
+'''
 slack_webhook_url   =   '<your Slack webhook URL goes here>' 
 
 slack_channel       =   '#random'  # modify this to your liking, ex: #alerts
