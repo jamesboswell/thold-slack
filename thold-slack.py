@@ -97,8 +97,12 @@ def main():
     }
 
 
-    req = urllib2.Request(slack_webhook_url)
-    req.add_header('Content-Type','application/json')
+    try:
+        req = urllib2.Request(slack_webhook_url)
+        req.add_header('Content-Type','application/json')
+    except ValueError as e:
+        print ('URL: Invalid slack_webhook_url defined, please update with your Slack.com webhook URL')
+        sys.exit(1)
 
     # JSONify our POST data
     postdata = json.dumps(payload)
