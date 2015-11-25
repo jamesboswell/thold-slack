@@ -71,7 +71,10 @@ def main():
 
     # determine Slack attachment color
     # allows for nice color coding of msgs
-    if mail['subject'].startswith('ALERT'):
+    if mail['subject'].startswith('ALERT! Host'):
+        color = thold_alert_color
+        message = "<!channel> " + message
+    elif mail['subject'].startswith('ALERT:'):
         color = thold_alert_color
     elif mail['subject'].startswith('WARNING'):
         color = thold_warning_color
