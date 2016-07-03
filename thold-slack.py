@@ -38,12 +38,21 @@ slack_usernmae      =   'Cacti THOLD' # the username reported in channel, modify
 slack_icon_emoji    =   ':cactus:' # any valid Slack emoji code,  defaults to cactus becasue Cacti
 slack_pretext       =   "" # optional pretext message you want on every message, ex: "Notification from Cacti on server01", left blank by default
 slack_title_link    =   "<edit me to include a hyperlink or set me to "">" #optional, can be blank ex: "https://<your-server>/cacti/plugins/thold/thold_graph.php?sort_column=lastread&sort_direction=DESC"
-
+slack_image_url     =   ""
 
 # you can use Slack API colors: good, warning, danger or any HEX value
 thold_alert_color    = 'danger'
 thold_warning_color  = 'warning'
 thold_default_color  = '#439FE0' # a nice blue for any notice not ALERT or WARNING in subject line
+
+# set to False to turn off baseline @channel
+alert_baselines      = True
+
+# Include THOLD graph images in Slack message?
+include_images       = True
+# dir to output image to slack_image_url must map to this in Apache/nginx config
+# run a CORN job to keep it clean  0 7 * * * root find /data/tmp/img -type f -mtime +14 -delete
+image_path           = '/data/tmp/img/'
 #### END GLOBAL VARIABLES #####
 
 def main():
@@ -69,6 +78,13 @@ def main():
     # get the body of the email as message
     message = get_body(mail)
 
+    # decode the image file and save
+    if include_images:
+        imgfile = get_image(mail)
+        slack_image_url2 = slack_image_url + imgfile
+    else:
+        slack_image_url2 = ""
+
     # determine Slack attachment color
     # allows for nice color coding of msgs
     if mail['subject'].startswith('ALERT! Host'):
@@ -76,6 +92,8 @@ def main():
         message = "<!channel> " + message
     elif mail['subject'].startswith('ALERT:'):
         color = thold_alert_color
+        if alert_baselines and 'baseline' in mail['subject']:
+           message = "<!channel> " + message
     elif mail['subject'].startswith('WARNING'):
         color = thold_warning_color
     else:
@@ -94,7 +112,8 @@ def main():
                 "title": mail['subject'],
                 "title_link": slack_title_link,
                 "text": message,
-                "color": color
+                "color": color,
+                "image_url": slack_image_url2
             }
         ]
     }
@@ -161,6 +180,30 @@ def get_body(message):
                        get_charset(message),
                        "replace")
         return body.strip()
+
+def genfile():
+    import uuid
+    filename = str(uuid.uuid4().hex)
+    filename = filename + '.png'
+    return filename
+
+def get_image(message):
+    """Get the image attachment"""
+
+    try:
+        attachment = message.get_payload()[1]
+
+        if 'image/jpg' in attachment.get_content_type():
+            path = image_path
+	    imgfilename = genfile()
+            imgfile = path + imgfilename
+            open(imgfile, 'wb').write(attachment.get_payload(decode=True))
+        else:
+            imgfilename = ''
+    except:
+        imgfilename = ""
+
+    return imgfilename
 
 if __name__ == '__main__':
     main()
