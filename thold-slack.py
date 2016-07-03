@@ -60,6 +60,9 @@ image_path           = '/data/tmp/img/'
 
 def main():
 
+    if sys.argv[1]:
+        slack_channel = "#" + sys.argv[1]
+
     # read in piped socket as 'data'
     if not sys.stdin.isatty():
         data = sys.stdin.readlines()
