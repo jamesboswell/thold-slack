@@ -25,6 +25,7 @@ from email import parser, FeedParser
 from email.Iterators import typed_subpart_iterator
 import urllib2,json
 from urllib2 import HTTPError, URLError
+import time
 
 #### BEGIN GLOBAL VARIABLES ####
 '''
@@ -44,6 +45,8 @@ slack_image_url     =   ""
 thold_alert_color    = 'danger'
 thold_warning_color  = 'warning'
 thold_default_color  = '#439FE0' # a nice blue for any notice not ALERT or WARNING in subject line
+footer               = 'thold-slack'
+epoch_time           = int(time.time())
 
 # set to False to turn off baseline @channel
 alert_baselines      = True
@@ -113,7 +116,9 @@ def main():
                 "title_link": slack_title_link,
                 "text": message,
                 "color": color,
-                "image_url": slack_image_url2
+                "image_url": slack_image_url2,
+                "footer": footer,
+                "ts": epoch_time
             }
         ]
     }
