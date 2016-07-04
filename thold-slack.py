@@ -60,7 +60,8 @@ image_path           = '/data/tmp/img/'
 
 def main():
 
-    if sys.argv[1]:
+    if len(sys.argv) > 1:
+        global slack_channel
         slack_channel = "#" + sys.argv[1]
 
     # read in piped socket as 'data'
