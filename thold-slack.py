@@ -23,12 +23,13 @@ import sys
 import email
 from email import parser, FeedParser
 from email.Iterators import typed_subpart_iterator
-import urllib2,json
+import json
+import urllib2
 from urllib2 import HTTPError, URLError
 import time
 
-#### BEGIN GLOBAL VARIABLES ####
 '''
+#### BEGIN GLOBAL VARIABLES ####
 You need to edit 'slack_webhook_url' with a webhook URL configured at:
 Slack Webhook URL (https://<domain>.slack.com/services/new/incoming-webhook)
 '''
@@ -44,7 +45,8 @@ slack_image_url     =   ""
 # you can use Slack API colors: good, warning, danger or any HEX value
 thold_alert_color    = 'danger'
 thold_warning_color  = 'warning'
-thold_default_color  = '#439FE0' # a nice blue for any notice not ALERT or WARNING in subject line
+# a nice blue for any notice not ALERT or WARNING in subject line
+thold_default_color  = '#439FE0'
 footer               = 'thold-slack'
 epoch_time           = int(time.time())
 
@@ -52,11 +54,12 @@ epoch_time           = int(time.time())
 alert_baselines      = True
 
 # Include THOLD graph images in Slack message?
-include_images       = True
+include_images      = True
 # dir to output image to slack_image_url must map to this in Apache/nginx config
 # run a CORN job to keep it clean  0 7 * * * root find /data/tmp/img -type f -mtime +14 -delete
 image_path           = '/data/tmp/img/'
-#### END GLOBAL VARIABLES #####
+# END GLOBAL VARIABLES #####
+
 
 def main():
 
@@ -100,12 +103,11 @@ def main():
     elif mail['subject'].startswith('ALERT:'):
         color = thold_alert_color
         if alert_baselines and 'baseline' in mail['subject']:
-           message = "<!channel> " + message
+            message = "<!channel> " + message
     elif mail['subject'].startswith('WARNING'):
         color = thold_warning_color
     else:
         color = thold_default_color
-
 
     # build payload (https://api.slack.com/docs/attachments)
     payload = {
@@ -127,12 +129,12 @@ def main():
         ]
     }
 
-
     try:
         req = urllib2.Request(slack_webhook_url)
-        req.add_header('Content-Type','application/json')
+        req.add_header('Content-Type', 'application/json')
     except ValueError as e:
-        print ('URL: Invalid slack_webhook_url defined, please update with your Slack.com webhook URL')
+        print ('URL: Invalid slack_webhook_url defined, please update' +
+               'with your Slack.com webhook URL')
         sys.exit(1)
 
     # JSONify our POST data
@@ -140,9 +142,10 @@ def main():
 
     # POST data to Slack API
     try:
-        urllib2.urlopen(req,postdata)
+        urllib2.urlopen(req, postdata)
     except ValueError, e:
-        print ('Invalid slack_webhook_url defined, please update with your Slack.com webhook URL')
+        print ('Invalid slack_webhook_url defined, please update' +
+               'with your Slack.com webhook URL')
     except HTTPError as e:
         print 'The server couldn\'t fulfill the request.'
         print 'Error code: ', e.code
@@ -153,6 +156,7 @@ def main():
     else:
         print "POST to Slack.com successful"
         # everything is fine
+
 
 def get_charset(message, default="ascii"):
     """Get the message charset"""
@@ -165,11 +169,12 @@ def get_charset(message, default="ascii"):
 
     return default
 
+
 def get_body(message):
     """Get the body of the email message"""
 
     if message.is_multipart():
-        #get the plain text version only
+        # get the plain text version only
         text_parts = [part
                       for part in typed_subpart_iterator(message,
                                                          'text',
@@ -183,12 +188,14 @@ def get_body(message):
 
         return u"\n".join(body).strip()
 
-    else: # if it is not multipart, the payload will be a string
-          # representing the message body
+    else:
+        # if it is not multipart, the payload will be a string
+        # representing the message body
         body = unicode(message.get_payload(decode=True),
                        get_charset(message),
                        "replace")
         return body.strip()
+
 
 def genfile(extension):
     import uuid
@@ -196,33 +203,33 @@ def genfile(extension):
     filename = filename + '.' + extension
     return filename
 
+
 def get_image(message):
-    """UPDATE BBO: Check if message is multipart or not. 
-    If so, then parse message body and extract image (JPEG only in this version,
+    """Check if message is multipart or not.
+    If so, then parse message body and extract image (JPEG in this version,
     but it would be quite easy to loop over any kinds of image types"""
 
     if message.is_multipart():
-        #print("Message is multipart") #DEBUG
-        #get the FIRST image JPEG version only
-        image_parts = [part for part in typed_subpart_iterator(message,'image','jpg')]
+        # get the FIRST image JPEG version only
+        image_parts = [part for part in
+                       typed_subpart_iterator(message, 'image', 'jpg')]
         image_part = image_parts[0]
         return return_image(image_part)
 
     else:
-        #print("Message is not multipart but has attachement") #DEBUG
         attachment = message.get_payload()[1]
         return return_image(attachment)
-    
 
-def return_image(part_or_attachement):
-    '''UPDATE BBO: extract the image data from the part provided as argument: either part of multipart message, either attachement'''
 
+def return_image(part_or_attachment):
+    """Extract the image data from the provided argument.
+    Function part of multipart message, either attachment"""
     try:
-
-        if 'image/jpg' in part_or_attachement.get_content_type():            
+        if 'image/jpg' in part_or_attachment.get_content_type():
             imgfilename = genfile('jpg')
             imgfile = image_path + imgfilename
-            open(imgfile, 'wb').write(part_or_attachement.get_payload(decode=True))
+            open(imgfile, 'wb').write(
+                    part_or_attachment.get_payload(decode=True))
         else:
             imgfilename = ''
     except:
