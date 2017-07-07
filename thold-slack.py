@@ -214,11 +214,6 @@ def get_image(message):
         image_parts = [part for part in
                        typed_subpart_iterator(message, 'image', 'jpg')]
         image_part = "" if len(image_parts) is 0 else image_parts[0]
-        if image_part == "":
-            print("DEBUG: No JPG subpart found!!")
-        else:
-            print("DEBUG: JPG image %s subpart found" %
-                  image_part.get_filename())
         return return_image(image_part)
 
     else:
